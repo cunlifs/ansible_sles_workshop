@@ -1,18 +1,10 @@
 ---
 # Playbook to show VM details using linux modules
-- hosts: sc-sles-vm-1
+- hosts: all
   gather_facts: yes
 
 
   tasks:
-#  - name: Display VM facts
-#    debug:
-#      var: hostvars[inventory_hostname]
-
-#  - name: Show all facts
-#    debug:
-#      var: ansible_hostname
-
   - name: Show facts
     debug:
       var: ansible_facts
@@ -21,11 +13,6 @@
     debug:
       msg: "{{ ansible_hostname }} is of architecture type {{ ansible_facts.architecture }}"
 
-#  - name: Set fact output variable
-#    set_fact:
-#      facts_level1: "{{ facts_level1 | default('') + item + ' - ' }}"
-#    with_items: "{{ ansible_facts }}"
-
-#  - name: Show facts_level1
-#    debug:
-#      msg: "Facts: {{ facts_level1 }}"
+  - name: Show OS facts 
+    debug:
+      msg: "{{ ansible_hostname }} is running {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}"
