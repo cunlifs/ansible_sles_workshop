@@ -1,10 +1,10 @@
 ---
-# Playbook to add/update linux users
+# Playbook to add/update linux user - entries all in vars section of playbook
 - hosts: all
   vars:
-    user_name: "stuartc"
-    user_details: "Stuart Cunliffe"
-    group: "users"
+    user_name: "user1"
+    user_details: "User 1"
+    groups: "users"
     uid: "1010"
     password: "abc1234"
 
@@ -16,5 +16,5 @@
         state: present
         comment: "{{ user_details }}"
         uid: "{{ uid }}"
-        group: "{{ group }}"
+        groups: "{{ groups }}"
         password: "{{ password | password_hash('sha512') }}"
