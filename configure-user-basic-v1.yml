@@ -4,8 +4,8 @@
   vars:
     user_name: "user1"
     user_details: "User 1"
-    groups: "users"
-    uid: "1010"
+    group: "users"
+    uid: "1020"
     password: "abc1234"
 
   tasks:
@@ -16,5 +16,5 @@
         state: present
         comment: "{{ user_details }}"
         uid: "{{ uid }}"
-        groups: "{{ groups }}"
+        group: "{{ group }}"
         password: "{{ password | password_hash('sha512') }}"
