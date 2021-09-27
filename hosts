@@ -1,0 +1,3 @@
+[SLES]
+sc-sles-vm-1 ansible_user=stuartc
+sc-sles-vm-2 ansible_user=stuartc
