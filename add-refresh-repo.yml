@@ -1,0 +1,14 @@
+---
+# Playbook to add NVIDIA repo and refresh
+- hosts: all
+  vars:
+    repo_name: "nvidia-repo"
+
+  tasks:
+    # Add NVIDIA repository for graphics drivers
+    - name: Add {{ repo_name }} repository
+      zypper_repository:
+        name: "{{ repo_name }}"
+        repo: 'ftp://download.nvidia.com/opensuse/12.2'
+        state: present
+        autorefresh: yes

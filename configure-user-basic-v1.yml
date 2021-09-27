@@ -1,0 +1,20 @@
+---
+# Playbook to add/update linux users
+- hosts: all
+  vars:
+    user_name: "stuartc"
+    user_details: "Stuart Cunliffe"
+    group: "users"
+    uid: "1010"
+    password: "abc1234"
+
+  tasks:
+    # Add/Update users
+    - name: Add/Update user {{ user_name }}
+      user:
+        name: "{{ user_name }}"
+        state: present
+        comment: "{{ user_details }}"
+        uid: "{{ uid }}"
+        group: "{{ group }}"
+        password: "{{ password | password_hash('sha512') }}"
