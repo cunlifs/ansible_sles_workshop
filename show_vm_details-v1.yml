@@ -1,11 +1,10 @@
 ---
-# Playbook to show VM details using linux modules
+# Playbook to show VM details using facts 
 - hosts: all
   gather_facts: yes
 
-
   tasks:
-  - name: Show facts
+  - name: Show all facts
     debug:
       var: ansible_facts
 
