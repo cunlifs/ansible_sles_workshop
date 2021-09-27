@@ -1,5 +1,6 @@
 ---
 # Playbook to add/update linux user - entries all in vars section of playbook
+# This playbook will fail (due to incorrect group)
 - hosts: all
   vars:
     user_name: "user1"
