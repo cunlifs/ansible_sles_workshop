@@ -18,3 +18,4 @@
         uid: "{{ uid }}"
         group: "{{ group }}"
         password: "{{ password | password_hash('sha512') }}"
+      become: yes
