@@ -1,1 +1,1 @@
-# ansible_sles_workshop
+# SLES Playbooks for workshop
