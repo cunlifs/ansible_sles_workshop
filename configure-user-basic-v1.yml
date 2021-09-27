@@ -9,7 +9,7 @@
     password: "abc1234"
 
   tasks:
-    # Add/Update users
+    # Add/Update user
     - name: Add/Update user {{ user_name }}
       user:
         name: "{{ user_name }}"
