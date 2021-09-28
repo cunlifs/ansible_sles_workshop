@@ -1,0 +1,22 @@
+---
+# Playbook to show VM details using facts.
+- hosts: all
+  gather_facts: yes
+
+  tasks:
+  - name: Show all facts
+    debug:
+      var: ansible_facts
+
+  - name: Show individual fact - architecture
+    debug:
+      msg: "{{ ansible_hostname }} is of architecture type {{ ansible_facts.architecture }}"
+
+  - name: Show OS facts 
+    debug:
+      msg: "{{ ansible_hostname }} is running {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}"
+ 
+  - name: Run hostnamectl command
+    command:
+      cmd: hostnamectl 
+

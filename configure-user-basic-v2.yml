@@ -1,0 +1,36 @@
+---
+# Playbook to add/update linux user - entries all in vars section of playbook
+# This playbook will fail (due to incorrect group)
+- hosts: all
+  vars:
+    user_name: "user1"
+    user_details: "User 1"
+#    group: "users"
+    group: "false_group"
+    uid: "1020"
+    password: "abc1234"
+
+  tasks:
+    # Add/Update user
+    - name: Add/Update user {{ user_name }}
+      user:
+        name: "{{ user_name }}"
+        state: present
+        comment: "{{ user_details }}"
+        uid: "{{ uid }}"
+        group: "{{ group }}"
+        password: "{{ password | password_hash('sha512') }}"
+      become: yes
+  #    ignore_errors: yes
+      register: user_add_output
+
+    - name: Show output from user add
+      debug:
+        var: user_add_output
+
+    - name: Show output from user add
+      debug:
+        msg: "Adding user {{ user_name }} to VM {{ ansible_hostname }} failed with message {{ user_add_output.msg }}"
+      when: user_add_output.failed == true
+
+ 
