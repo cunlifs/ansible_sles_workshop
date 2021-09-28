@@ -1,0 +1,22 @@
+---
+users:
+  - user_name: "stuartc"
+    user_details: "Stuart Cunliffe"
+    uid: 1010
+    state: present
+    groups: "users, wheel"
+    password: "abc1234"
+
+  - user_name: "torstenw"
+    user_details: "Torsten Wendland"
+    uid: 1011
+    state: present
+    groups: "users"
+    password: "abc1234"
+
+  - user_name: "richardj"
+    user_details: "Richard Jefferies"
+    uid: 1012
+    state: present
+    groups: "users"
+    password: "abc1234"
