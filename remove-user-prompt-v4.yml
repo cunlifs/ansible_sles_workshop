@@ -16,4 +16,9 @@
         name: "{{ user_name }}"
         state: absent
       become: yes
-      when: confirm_remove == "Y"
+      when: 
+        - confirm_remove == "Y" or 
+          confirm_remove == "y"
+      
+
+
