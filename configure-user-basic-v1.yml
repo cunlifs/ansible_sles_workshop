@@ -2,10 +2,10 @@
 # Playbook to add/update linux user - entries all in vars section of playbook
 - hosts: all
   vars:
-    user_name: "user1"
-    user_details: "User 1"
+    user_name: "user2"
+    user_details: "User 2"
     group: "users"
-    uid: "1020"
+    uid: "1022"
     password: "abc1234"
 
   tasks:
@@ -13,9 +13,15 @@
     - name: Add/Update user {{ user_name }}
       user:
         name: "{{ user_name }}"
-        state: present
+        state: absent
         comment: "{{ user_details }}"
         uid: "{{ uid }}"
         group: "{{ group }}"
         password: "{{ password | password_hash('sha512') }}"
       become: yes
+      register: user_add_output
+
+    - name: Show user output
+      debug:
+        var: user_add_output
+        verbosity: 1

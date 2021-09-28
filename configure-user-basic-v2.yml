@@ -5,8 +5,8 @@
   vars:
     user_name: "user1"
     user_details: "User 1"
-#    group: "users"
-    group: "false_group"
+    group: "users"
+#    group: "false_group"
     uid: "1020"
     password: "abc1234"
 
@@ -21,7 +21,7 @@
         group: "{{ group }}"
         password: "{{ password | password_hash('sha512') }}"
       become: yes
-  #    ignore_errors: yes
+      ignore_errors: yes
       register: user_add_output
 
     - name: Show output from user add
