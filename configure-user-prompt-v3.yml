@@ -4,12 +4,16 @@
   vars_prompt:
     - name: "user_name"
       prompt: "Enter name of user"
+      private: no
     - name: "user_details"
       prompt: "Enter users name and/or description"
+      private: no
     - name: "group"
       prompt: "Enter primary group name e.g. users"
+      private: no
     - name: "uid"
       prompt: "Enter user ID"
+      private: no
     - name: "password"
       prompt: "Enter user password"
       private: yes

@@ -1,0 +1,19 @@
+---
+# Playbook to remove linux users - using prompts
+- hosts: all
+  vars_prompt:
+    - name: "user_name"
+      prompt: "Enter name of user to remove"
+      private: no
+    - name: "confirm_remove"
+      prompt: "Confirm you want to remove user? (Y/N)"
+      private: no
+
+  tasks:
+    # remove user
+    - name: Removing user {{ user_name }}
+      user:
+        name: "{{ user_name }}"
+        state: absent
+      become: yes
+      when: confirm_remove == "Y"
