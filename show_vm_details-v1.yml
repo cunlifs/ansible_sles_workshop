@@ -1,5 +1,5 @@
 ---
-# Playbook to show VM details using facts 
+# Playbook to show VM details using facts.
 - hosts: all
   gather_facts: yes
 
