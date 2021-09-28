@@ -5,8 +5,8 @@
   vars:
     user_name: "user1"
     user_details: "User 1"
-    group: "users"
-#    group: "false_group"
+#    group: "users"
+    group: "false_group"
     uid: "1020"
     password: "abc1234"
 
