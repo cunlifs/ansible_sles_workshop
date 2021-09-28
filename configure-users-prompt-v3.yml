@@ -1,0 +1,27 @@
+---
+# Playbook to add/update linux users - using prompts
+- hosts: all
+  vars_prompt:
+    - name: "user_name"
+      prompt: "Enter name of user"
+    - name: "user_details"
+      prompt: "Enter users name and/or description"
+    - name: "group"
+      prompt: "Enter primary group name e.g. users"
+    - name: "uid"
+      prompt: "Enter user ID"
+    - name: "password"
+      prompt: "Enter user password"
+      private: yes
+
+  tasks:
+    # Add/Update users
+    - name: Add/Update user {{ user_name }}
+      user:
+        name: "{{ user_name }}"
+        state: present
+        comment: "{{ user_details }}"
+        uid: "{{ uid }}"
+        group: "{{ group }}"
+        password: "{{ password | password_hash('sha512') }}"
+      become: yes
