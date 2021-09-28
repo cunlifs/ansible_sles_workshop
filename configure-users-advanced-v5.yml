@@ -1,0 +1,26 @@
+---
+# Playbook to add/update linux users using variables file
+- hosts: all
+
+#  vars:
+#    user_name: "user2"
+#    user_details: "User 2"
+#    group: "users"
+#    uid: "1021"
+#    password: "abc1234"
+
+  tasks:
+    # Import variable(s)
+    - name:
+      include_vars: ./all_users_vars.yml
+
+    # Add/Update users
+    - name: Add/Update users
+      user:
+        name: "{{ item.user_name }}"
+        state: "{{ item.state }}"
+        comment: "{{ item.user_details }}"
+        uid: "{{ item.uid }}"
+        groups: "{{ item.groups }}"
+        password: "{{ item.password | password_hash('sha512') }}"
+      loop: "{{ users }}"
