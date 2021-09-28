@@ -1,0 +1,37 @@
+---
+
+- hosts: all
+
+  tasks:
+    - name: Install nmon
+      community.general.zypper:
+        name: nmon
+        state: present
+        
+#    - name: Install apache2 with recommended packages
+#      community.general.zypper:
+#        name: apache2
+#        state: present
+#        disable_recommends: no
+
+#    - name: Apply a given patch
+#      community.general.zypper:
+#        name: openSUSE-2016-128
+#        state: present
+#        type: patch
+
+    - name: Remove the nmon package
+      community.general.zypper:
+        name: nmon
+        state: absent
+        
+    - name: Update all packages
+      community.general.zypper:
+        name: '*'
+        state: latest
+
+#    - name: Apply all available patches
+#      community.general.zypper:
+#        name: '*'
+#        state: latest
+#        type: patch

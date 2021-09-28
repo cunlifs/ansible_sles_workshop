@@ -1,0 +1,21 @@
+---
+
+- hosts: all
+
+  tasks:
+    - name: Remove HANA DATA FS Mount Point
+      mount:
+        path: /dummyfs
+        src: /dev/mapper/hanadata_temp-hanadata_templv
+        fstype: xfs
+        state: absent
+
+    - name: Remove mount dir
+      shell: "rmdir /dummyfs"
+      ignore_errors: yes
+        
+    - name: Remove volume group HANA DATA
+      community.general.lvg: 
+        vg: hanadata_temp
+        state: absent
+        force: yes

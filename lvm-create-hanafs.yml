@@ -1,0 +1,41 @@
+---
+
+- hosts: all
+
+  tasks:
+    - name: Rescan SCSI bus
+      shell: "rescan-scsi-bus.sh -a"
+      
+    - name: Detect free mpath volumes
+      shell: "pvs -a |grep mpath | sort | awk '$5 == \"\"' | awk '{ print $1 }'"
+      register: empty_pvs
+
+# will fail, because empty_pvs will be empty, if VG already exsists      
+    - name: Create volume group HANA DATA
+      community.general.lvg: 
+        vg: hanadata_temp
+        pvs: "{{ empty_pvs.stdout_lines }}"
+        
+    - name: Create a striped HANA DATA logical volume the size of all remaining space in the volume group
+      community.general.lvol:
+        vg: hanadata_temp
+        lv: hanadata_templv
+        size: 100%FREE
+        opts: -i 4 -I 256K
+        
+    - name: Create a XFS filesystem for HANA DATA
+      community.general.filesystem:
+        fstype: xfs
+        dev: /dev/mapper/hanadata_temp-hanadata_templv
+        opts: -b size=4096 -s size=4096
+        
+    - name: Create mount dir
+      shell: "mkdir /dummyfs"
+      ignore_errors: yes
+
+    - name: Mount HANA DATA FS
+      mount:
+        path: /dummyfs
+        src: /dev/mapper/hanadata_temp-hanadata_templv
+        fstype: xfs
+        state: mounted
