@@ -1,0 +1,7 @@
+---
+# vars file for create_HANA_LVs
+hana_vg_name: "hanadata_temp"
+hana_lv_name: "hanadata_templv"
+hana_fs_name: "/dummy"
+stripe_set:   "4"
+stripe_size:  "256K"

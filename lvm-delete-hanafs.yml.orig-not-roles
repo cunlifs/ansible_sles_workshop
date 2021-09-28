@@ -1,0 +1,40 @@
+---
+- hosts: all
+  become: yes
+
+  vars:
+    hana_vg_name: "hanadata_temp"
+    hana_lv_name: "hanadata_templv"
+    hana_fs_name: "/dummy"
+
+  tasks:
+    - name: Remove HANA DATA FS Mount Point {{ hana_fs_name }}
+      mount:
+        path: "{{ hana_fs_name }}"
+        src: "/dev/mapper/{{ hana_vg_name }}-{{ hana_lv_name }}"
+        fstype: xfs
+        state: absent
+
+    - name: Remove mount dir {{ hana_fs_name }}
+      file:
+        path: "{{ hana_fs_name }}"
+        state: absent
+        
+    - name: Fetch the pvs of HANA DATA
+      shell: "pvs | grep {{ hana_vg_name }} | awk '{ print $1 }'"
+      register: pvs_to_clean
+
+    - name: Show PVS to clean
+      debug:
+        var: pvs_to_clean
+        verbosity: 1
+
+    - name: Remove volume group HANA DATA {{ hana_vg_name }}
+      lvg: 
+        vg: "{{ hana_vg_name }}"
+        state: absent
+        force: yes
+ 
+    - name: PVREMOVE on no longer used PVs
+      shell: "pvremove {{ item }}"
+      with_items: "{{ pvs_to_clean.stdout_lines }}"

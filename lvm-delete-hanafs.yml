@@ -1,21 +1,15 @@
 ---
-
+# Playbook to remove SAP HANA VGs, LVs and FSs
 - hosts: all
+  become: yes
 
   tasks:
-    - name: Remove HANA DATA FS Mount Point
-      mount:
-        path: /dummyfs
-        src: /dev/mapper/hanadata_temp-hanadata_templv
-        fstype: xfs
-        state: absent
-
-    - name: Remove mount dir
-      shell: "rmdir /dummyfs"
-      ignore_errors: yes
-        
-    - name: Remove volume group HANA DATA
-      community.general.lvg: 
-        vg: hanadata_temp
-        state: absent
-        force: yes
+    - name: Import SAP HANA role to remove VGs, LVs and FSs 
+      import_role:
+        name: delete_HANA_LVs
+      register: delete_HANA_LVs_ouput
+      
+    - name: Show HANA delete output 
+      debug:
+        var: delete_HANA_LVs_ouput
+        verbosity: 1

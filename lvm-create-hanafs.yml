@@ -1,48 +1,16 @@
 ---
+# Playbook to create a HANA VG, LV and filesystem
 # Create required VGs, LVs and FSs
 - hosts: all
   become: yes
-
+ 
   tasks:
-    - name: Rescan SCSI bus
-      shell: "rescan-scsi-bus.sh -a"
+    - name: Import SAP HANA role to create VGs, LVs and FSs 
+      import_role:
+        name: create_HANA_LVs
+      register: create_HANA_LVs_ouput
       
-    - name: Detect free mpath volumes
-      shell: "pvs -a |grep mpath | grep -v part | sort | awk '$5 == \"\"' | awk '{ print $1 }'"
-      register: empty_pvs
-
-    - name: Show empty pvs
+    - name: Show HANA create output 
       debug:
-        var: empty_pvs
-
-#    - meta: end_play
-
-# will fail, because empty_pvs will be empty, if VG already exsists      
-    - name: Create volume group HANA DATA
-      community.general.lvg: 
-        vg: hanadata_temp
-        pvs: "{{ empty_pvs.stdout_lines }}"
-        
-    - name: Create a striped HANA DATA logical volume the size of all remaining space in the volume group
-      community.general.lvol:
-        vg: hanadata_temp
-        lv: hanadata_templv
-        size: 100%FREE
-        opts: -i 4 -I 256K
-        
-    - name: Create a XFS filesystem for HANA DATA
-      community.general.filesystem:
-        fstype: xfs
-        dev: /dev/mapper/hanadata_temp-hanadata_templv
-        opts: -b size=4096 -s size=4096
-        
-    - name: Create mount dir
-      shell: "mkdir /dummyfs"
-      ignore_errors: yes
-
-    - name: Mount HANA DATA FS
-      mount:
-        path: /dummyfs
-        src: /dev/mapper/hanadata_temp-hanadata_templv
-        fstype: xfs
-        state: mounted
+        var: create_HANA_LVs_ouput
+        verbosity: 1
