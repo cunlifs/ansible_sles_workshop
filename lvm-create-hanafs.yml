@@ -1,14 +1,21 @@
 ---
-
+# Create required VGs, LVs and FSs
 - hosts: all
+  become: yes
 
   tasks:
     - name: Rescan SCSI bus
       shell: "rescan-scsi-bus.sh -a"
       
     - name: Detect free mpath volumes
-      shell: "pvs -a |grep mpath | sort | awk '$5 == \"\"' | awk '{ print $1 }'"
+      shell: "pvs -a |grep mpath | grep -v part | sort | awk '$5 == \"\"' | awk '{ print $1 }'"
       register: empty_pvs
+
+    - name: Show empty pvs
+      debug:
+        var: empty_pvs
+
+#    - meta: end_play
 
 # will fail, because empty_pvs will be empty, if VG already exsists      
     - name: Create volume group HANA DATA
