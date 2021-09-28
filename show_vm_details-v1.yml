@@ -16,7 +16,7 @@
     debug:
       msg: "{{ ansible_hostname }} is running {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}"
  
-  - name: Run 
+  - name: Run hostnamectl command
     command:
-       cmd: hostnamectl 
+      cmd: hostnamectl 
 
