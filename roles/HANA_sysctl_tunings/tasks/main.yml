@@ -1,0 +1,8 @@
+---
+# tasks file for HANA_sysctl_tunings
+- name: Setting sysctl values as defined in variables file
+  sysctl:
+     name: "{{ item.name }}"
+     value: "{{ item.value }}"
+     state: "{{ item.state }}"
+  loop: "{{ sysctl_details }}"
