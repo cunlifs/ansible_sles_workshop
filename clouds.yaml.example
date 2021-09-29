@@ -1,0 +1,10 @@
+clouds:
+  dtagsapcloud:
+    auth:
+      auth_url: https://<POWERVC IP>:5000/v3/
+      project_name: SAP
+      project_domain_name: Default
+      user_domain_name: Default
+      username: root
+      password: PASSWORD
+    region_name: RegionOne
