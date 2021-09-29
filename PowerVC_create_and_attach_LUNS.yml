@@ -1,0 +1,43 @@
+---
+- name: Create and attach LUNS via PowerVC
+  hosts: all
+  gather_facts: yes
+
+  tasks:
+    - name: Show hostname
+      debug:
+        var: ansible_hostname
+      delegate_to: localhost
+
+    - name: create 40g test volume
+      os_volume:
+        state: present
+        cloud: london_powervc
+        size: 1
+        display_name: "{{ ansible_hostname }}_test_vol_{{ item }}"
+      with_sequence: start=0 count=4
+      delegate_to: localhost
+
+    - name: Stop server
+      os_server_action:
+        cloud: london_powervc
+        action: stop
+        server: "{{ ansible_hostname }}"
+      delegate_to: localhost
+
+    - name: Attach volume
+      os_server_volume:
+        cloud: london_powervc
+        state: present
+        volume: "{{ ansible_hostname }}_test_vol_{{ item }}"
+        server: "{{ ansible_hostname }}"
+      with_sequence: start=0 count=4
+      ignore_errors: yes
+      delegate_to: localhost
+
+    - name: Start server
+      os_server_action:
+        cloud: london_powervc
+        action: start
+        server: "{{ ansible_hostname }}"
+      delegate_to: localhost
