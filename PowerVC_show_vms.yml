@@ -1,0 +1,15 @@
+---
+- name: Connected to PowerVC/Openstack and show VMs
+  hosts: localhost
+
+  tasks:
+    - name:
+      os_server_facts:
+        cloud: london_powervc
+        #validate_certs: false
+#        ca_cert: "/home/ansible/sles/powervc_183.crt"
+      register: result
+      ignore_errors: yes
+
+    - debug:
+        var: result
