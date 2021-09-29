@@ -7,6 +7,7 @@
     size: 1
     display_name: "{{ os_volume_name }}{{ ansible_hostname }}_{{ item }}"
   with_sequence: start=0 count="{{ os_volume_count }}"
+  register: task_result_create
   delegate_to: localhost
 
 - name: Stop server
@@ -15,6 +16,8 @@
     action: stop
     server: "{{ ansible_hostname }}"
   delegate_to: localhost
+  register: task_result_stop
+  when: task_result_create is changed
 
 - name: Attach volume
   os_server_volume:
@@ -23,6 +26,7 @@
     volume: "{{ os_volume_name }}{{ ansible_hostname }}_{{ item }}"
     server: "{{ ansible_hostname }}"
   with_sequence: start=0 count="{{ os_volume_count }}"
+  when: task_result_stop is changed
   delegate_to: localhost
 
 - name: Start server
@@ -30,7 +34,7 @@
     cloud: "{{ cloud_name }}"
     action: start
     server: "{{ ansible_hostname }}"
-  register: task_result
+  register: task_result_start
   delegate_to: localhost
 
 - name: Wait for the reboot to complete if there was a change.
@@ -39,10 +43,14 @@
     sleep: 5
     delay: 5
     timeout: 300
-  when: task_result is changed
+  when: task_result_start is changed
+
+#- name: Pause for 5 minutes
+#  pause:
+#    minutes: 5
 
 - name: Rescan SCSI bus
-  shell: "rescan-scsi-bus.sh -a"
+  shell: "rescan-scsi-bus.sh -a -u"
   register: scan_output
       
 - name: Show scan output 

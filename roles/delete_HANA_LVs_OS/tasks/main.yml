@@ -26,6 +26,7 @@
     vg: "{{ hana_vg_name }}"
     state: absent
     force: yes
+  register: task_result_vgremove
  
 - name: PVREMOVE on no longer used PVs
   shell: "pvremove {{ item }}"
@@ -37,6 +38,7 @@
     action: stop
     server: "{{ ansible_hostname }}"
   delegate_to: localhost
+  when: task_result_vgremove is changed
 
 - name: Detach volume(s)
   os_server_volume:
