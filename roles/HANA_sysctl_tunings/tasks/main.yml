@@ -6,3 +6,4 @@
      value: "{{ item.value }}"
      state: "{{ item.state }}"
   loop: "{{ sysctl_details }}"
+  register: HANA_sysctl_output

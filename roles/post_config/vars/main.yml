@@ -1,0 +1,4 @@
+---
+# vars file for post_config
+grub_conf_file: "/etc/default/grub"
+comment_1: "#Line below updated by Ansible"

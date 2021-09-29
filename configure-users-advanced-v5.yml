@@ -3,18 +3,7 @@
 - hosts: all
 
   tasks:
-    # Import variable(s)
-    - name:
-      include_vars: ./all_users_vars.yml
-
-    # Add/Update users
-    - name: Add/Update users
-      user:
-        name: "{{ item.user_name }}"
-        state: "{{ item.state }}"
-        comment: "{{ item.user_details }}"
-        uid: "{{ item.uid }}"
-        group: "{{ item.group }}"
-        groups: "{{ item.groups }}"
-        password: "{{ item.password | password_hash('sha512') }}"
-      loop: "{{ users }}"
+    - name: Import configure users role
+      import_role:
+        name: configure_users
+      register: configure_users_output

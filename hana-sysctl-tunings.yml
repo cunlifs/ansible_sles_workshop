@@ -7,9 +7,13 @@
     - name: Import SAP HANA role to tune sysctl values 
       import_role:
         name: HANA_sysctl_tunings 
-      register: HANA_sysctl_ouput
       
     - name: Show HANA sysctl tuning output 
       debug:
-        var: HANA_sysctl_ouput
+        msg: "Output: {{ HANA_sysctl_output }}"
+        verbosity: 1
+
+    - name: Show HANA sysctl tuning output vars
+      debug:
+        var: HANA_sysctl_output 
         verbosity: 1

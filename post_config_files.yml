@@ -1,0 +1,9 @@
+---
+# Playbook to update various files 
+- hosts: all
+  become: yes
+ 
+  tasks:
+    - name: Import post configuration role 
+      import_role:
+        name: post_config

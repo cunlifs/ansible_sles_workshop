@@ -1,4 +1,5 @@
 ---
+# vars file for configure_users
 users:
   - user_name: "user2"
     user_details: "Stuart Cunliffe"

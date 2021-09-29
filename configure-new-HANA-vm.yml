@@ -1,0 +1,18 @@
+---
+# Playbook to configure new SAP HANA VM
+# Will call mulitple roles 
+- hosts: all
+  gather_fact: yes
+
+  tasks:
+    # Roles to configure users
+    - name: Import configure users role
+      import_role:
+        name: configure_users
+      register: configure_users_output
+
+    # Roles to configure VGs, LVs, FSs
+    - name: Import configure VGs etc
+      import_role:
+        name: configure_lvs
+      register: configure_lvs_outptu

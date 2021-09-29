@@ -1,0 +1,34 @@
+---
+# tasks file for post_config
+- name: Updating GRUB_CMDLINE_LINUX_DEFAULT in {{ grub_conf_file }} 
+  lineinfile:
+     path: "{{ grub_conf_file }}"
+     regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+     line: 'GRUB_CMDLINE_LINUX_DEFAULT="mitigations=auto quiet crashkernel=243M ibmvfc.max_requests=200"'
+     backup: yes
+  register: grub_cmdline_output
+
+- name: Show output from GRUB_CMDLINE_LINUX_DEFAULT update
+  debug:
+    var: grub_cmdline_output
+    verbosity: 1
+
+- name: Adding new entry  into {{ grub_conf_file }} 
+  lineinfile:
+     path: "{{ grub_conf_file }}"
+     insertbefore: '^GRUB_CMDLINE_LINUX_DEFAULT='
+     line: "#Line below updated by Ansible"
+
+- name: Insert/Update "Match User" configuration block in /etc/ssh/sshd_config
+  blockinfile:
+    path: "{{ grub_conf_file }}"
+    insertafter: '^GRUB_CMDLINE_LINUX_DEFAULT='
+    block: |
+      # This block of text
+      # was added by Ansible
+
+- name: Run grub2-mkconfig to update changes
+  shell: "grub2-mkconfig -o /boot/grub2/grub.cfg"
+  when: grub_cmdline_output.changed == true
+  become: yes
+  register: grub2_mkconfig_output 
