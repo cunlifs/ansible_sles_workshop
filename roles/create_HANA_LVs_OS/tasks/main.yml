@@ -30,6 +30,7 @@
     cloud: "{{ cloud_name }}"
     action: start
     server: "{{ ansible_hostname }}"
+  register: task_result
   delegate_to: localhost
 
 - name: Wait for the reboot to complete if there was a change.
@@ -39,8 +40,6 @@
     delay: 5
     timeout: 300
   when: task_result is changed
-  
-- meta: end_play
 
 - name: Rescan SCSI bus
   shell: "rescan-scsi-bus.sh -a"
