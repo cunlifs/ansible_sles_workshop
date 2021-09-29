@@ -1,0 +1,64 @@
+---
+# tasks file for delete_HANA_LVs
+- name: Remove HANA DATA FS Mount Point {{ hana_fs_name }}
+  mount:
+    path: "{{ hana_fs_name }}"
+    src: "/dev/mapper/{{ hana_vg_name }}-{{ hana_lv_name }}"
+    fstype: xfs
+    state: absent
+
+- name: Remove mount dir {{ hana_fs_name }}
+  file:
+    path: "{{ hana_fs_name }}"
+    state: absent
+        
+- name: Fetch the pvs of HANA DATA
+  shell: "pvs | grep {{ hana_vg_name }} | awk '{ print $1 }'"
+  register: pvs_to_clean
+
+- name: Show PVS to clean
+  debug:
+    var: pvs_to_clean
+    verbosity: 1
+
+- name: Remove volume group HANA DATA {{ hana_vg_name }}
+  lvg: 
+    vg: "{{ hana_vg_name }}"
+    state: absent
+    force: yes
+ 
+- name: PVREMOVE on no longer used PVs
+  shell: "pvremove {{ item }}"
+  with_items: "{{ pvs_to_clean.stdout_lines }}"
+
+- name: Stop server
+  os_server_action:
+    cloud: "{{ cloud_name }}"
+    action: stop
+    server: "{{ ansible_hostname }}"
+  delegate_to: localhost
+
+- name: Detach volume(s)
+  os_server_volume:
+    cloud: "{{ cloud_name }}"
+    state: absent
+    volume: "{{ os_volume_name }}{{ ansible_hostname }}_{{ item }}"
+    server: "{{ ansible_hostname }}"
+  with_sequence: start=0 count="{{ os_volume_count }}"
+  delegate_to: localhost
+
+- name: Delete 1g test volume
+  os_volume:
+    state: absent
+    cloud: "{{ cloud_name }}"
+    size: 1
+    display_name: "{{ os_volume_name }}{{ ansible_hostname }}_{{ item }}"
+  with_sequence: start=0 count="{{ os_volume_count }}"
+  delegate_to: localhost
+
+- name: Start server
+  os_server_action:
+    cloud: "{{ cloud_name }}"
+    action: start
+    server: "{{ ansible_hostname }}"
+  delegate_to: localhost

@@ -1,0 +1,130 @@
+---
+# tasks file for create_HANA_LVs
+- name: Create 1g test volume
+  os_volume:
+    state: present
+    cloud: "{{ cloud_name }}"
+    size: 1
+    display_name: "{{ os_volume_name }}{{ ansible_hostname }}_{{ item }}"
+  with_sequence: start=0 count="{{ os_volume_count }}"
+  delegate_to: localhost
+
+- name: Stop server
+  os_server_action:
+    cloud: "{{ cloud_name }}"
+    action: stop
+    server: "{{ ansible_hostname }}"
+  delegate_to: localhost
+
+- name: Attach volume
+  os_server_volume:
+    cloud: "{{ cloud_name }}"
+    state: present
+    volume: "{{ os_volume_name }}{{ ansible_hostname }}_{{ item }}"
+    server: "{{ ansible_hostname }}"
+  with_sequence: start=0 count="{{ os_volume_count }}"
+  delegate_to: localhost
+
+- name: Start server
+  os_server_action:
+    cloud: "{{ cloud_name }}"
+    action: start
+    server: "{{ ansible_hostname }}"
+  delegate_to: localhost
+
+- name: Wait for the reboot to complete if there was a change.
+  wait_for_connection:
+    connect_timeout: 20
+    sleep: 5
+    delay: 5
+    timeout: 300
+  when: task_result is changed
+  
+- meta: end_play
+
+- name: Rescan SCSI bus
+  shell: "rescan-scsi-bus.sh -a"
+  register: scan_output
+      
+- name: Show scan output 
+  debug:
+    var: scan_output
+    verbosity: 1
+
+- name: Detect free mpath volumes
+  shell: "pvs -a |grep mpath | grep -v part | sort | awk '$5 == \"\"' | awk '{ print $1 }'"
+  register: empty_pvs
+
+- name: Show empty pvs
+  debug:
+    var: empty_pvs
+    verbosity: 1
+
+- name: End playbook if no free volumes are found
+  block:
+    - name: Report that no free volumes were found
+      debug:
+        msg: "No free volumes were found on VM {{ ansible_hostname }}"
+    - meta: end_play
+  when: empty_pvs.stdout == ''
+
+- name: Create volume group HANA DATA
+  lvg: 
+    vg: "{{ hana_vg_name }}"
+    pvs: "{{ empty_pvs.stdout_lines }}"
+  register: vg_create_output
+        
+- name: Show VG create output 
+  debug:
+    var: vg_create_output
+    verbosity: 1
+
+- name: Create a striped HANA DATA logical volume the size of all remaining space in the volume group
+  lvol:
+    vg: "{{ hana_vg_name }}"
+    lv: "{{ hana_lv_name }}"
+    size: 100%FREE
+    opts: "-i {{ stripe_set }} -I {{ stripe_size }}"
+  register: lv_create_output
+      
+- name: Show LV create output 
+  debug:
+    var: lv_create_output
+    verbosity: 1
+
+- name: Create a XFS filesystem for HANA DATA
+  filesystem:
+    fstype: xfs
+    dev: "/dev/mapper/{{ hana_vg_name }}-{{ hana_lv_name }}"
+    opts: -b size=4096 -s size=4096
+  register: fs_create_output
+        
+- name: Show FS create output 
+  debug:
+    var: fs_create_output
+    verbosity: 1
+
+- name: Create mount dir
+  file:
+    path: "{{ hana_fs_name }}"
+    state: directory
+    mode: '0755' 
+  register: mount_create_output
+
+- name: Show mount point create output 
+  debug:
+    var: mount_create_output
+    verbosity: 1
+
+- name: Mount HANA DATA FS
+  mount:
+    path: "{{ hana_fs_name }}"
+    src: "/dev/mapper/{{ hana_vg_name }}-{{ hana_lv_name }}"
+    fstype: xfs
+    state: mounted
+  register: mount_output
+
+- name: Show mount output 
+  debug:
+    var: mount_output
+    verbosity: 1

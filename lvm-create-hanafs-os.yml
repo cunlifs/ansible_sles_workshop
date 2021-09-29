@@ -1,0 +1,16 @@
+---
+# Playbook to create a HANA VG, LV and filesystem
+# Create required VGs, LVs and FSs
+- hosts: all
+  become: no
+ 
+  tasks:
+    - name: Import SAP HANA role to create VGs, LVs and FSs 
+      import_role:
+        name: create_HANA_LVs_OS
+      register: create_HANA_LVs_ouput
+      
+    - name: Show HANA create output 
+      debug:
+        var: create_HANA_LVs_ouput
+        verbosity: 1
