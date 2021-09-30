@@ -19,7 +19,7 @@
      insertbefore: '^GRUB_CMDLINE_LINUX_DEFAULT='
      line: "#Line below updated by Ansible"
 
-- name: Insert/Update "Match User" configuration block in /etc/ssh/sshd_config
+- name: Insert block into {{ grub_config_file }}
   blockinfile:
     path: "{{ grub_conf_file }}"
     insertafter: '^GRUB_CMDLINE_LINUX_DEFAULT='
