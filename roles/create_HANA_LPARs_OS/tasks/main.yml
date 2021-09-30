@@ -1,0 +1,23 @@
+---
+# tasks file for create_HANA_LPARs_OS
+- name: Creates new instance(s) and attaches to a network
+  os_server:
+    state: present
+    cloud: "{{ cloud_name }}"
+    name: "{{ os_lpar_name }}{{ item }}"
+    image: "{{ os_image_name }}"
+    flavor: "{{ os_flavor_name }}"
+    availability_zone: "{{ os_availability_zone }}"
+    timeout: "{{ os_timeout }}"
+    nics:
+      - net-name: "{{ os_net_name }}"
+  with_sequence: start=0 count="{{ os_server_count }}"
+  register: my_vm
+  
+- name: Add VM to inventory
+  add_host:
+    name: "{{ item.server.name }}"
+    groups: openstack_vms
+    ansible_host: "{{ item.server.public_v4 }}"
+  with_items: "{{ my_vm.results }}"
+  when: my_vm is changed

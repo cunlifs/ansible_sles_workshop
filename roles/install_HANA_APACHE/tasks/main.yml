@@ -1,0 +1,13 @@
+---
+# tasks file for create_HANA_LPARs_OS
+- name: Wait for the reboot to complete if there was a change.
+  wait_for_connection:
+    connect_timeout: 20
+    sleep: 5
+    delay: 5
+    timeout: 300
+
+- name: Install apache2 package with zypper
+  zypper:
+    name: apache2
+    state: present

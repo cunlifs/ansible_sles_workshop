@@ -1,0 +1,10 @@
+---
+# vars file for create_HANA_LPARs_OS
+cloud_name: "londonibm"
+os_lpar_name: "tw-vm"
+os_net_name: "VLAN_156"
+os_image_name: "SLES15 SP2 for SAP Applications"
+os_flavor_name: "tiny"
+os_availability_zone: "Default Group"
+os_server_count: 2
+os_timeout: "300"

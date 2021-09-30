@@ -1,0 +1,20 @@
+---
+# Playbook to create a HANA LPARs with OpenStack
+
+#- hosts: localhost
+#  become: no
+ 
+- name: Import SAP HANA role to create LPARs 
+  hosts: localhost
+  become: no
+  roles:
+  - create_HANA_LPARs_OS
+
+- name: Install Apache on all new LPARs
+  hosts: all
+  gather_facts: yes
+  become: no
+#  ansible_user: student
+  roles:
+  - install_HANA_APACHE
+  
