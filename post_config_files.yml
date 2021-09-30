@@ -1,6 +1,6 @@
 ---
 # Playbook to update various files 
-- hosts: all
+- hosts: HANA
   become: yes
  
   tasks:

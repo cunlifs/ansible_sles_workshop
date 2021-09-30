@@ -3,6 +3,6 @@
 hana_vg_name: "hanadata_temp"
 hana_lv_name: "hanadata_templv"
 hana_fs_name: "/dummy"
-cloud_name: "londonibm"
+cloud_name: "london_powervc"
 os_volume_name: "test_volume_"
 os_volume_count: 4

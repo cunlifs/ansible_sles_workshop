@@ -1,10 +1,10 @@
 ---
 # tasks file for create_HANA_LVs
-- name: Create 1g test volume
+- name: Create {{ os_volume_size }}g test volume
   os_volume:
     state: present
     cloud: "{{ cloud_name }}"
-    size: 1
+    size: "{{ os_volume_size }}"
     display_name: "{{ os_volume_name }}{{ ansible_hostname }}_{{ item }}"
   with_sequence: start=0 count="{{ os_volume_count }}"
   register: task_result_create

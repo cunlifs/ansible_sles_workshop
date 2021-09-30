@@ -49,11 +49,11 @@
   with_sequence: start=0 count="{{ os_volume_count }}"
   delegate_to: localhost
 
-- name: Delete 1g test volume
+- name: Delete test volume
   os_volume:
     state: absent
     cloud: "{{ cloud_name }}"
-    size: 1
+#    size: 1
     display_name: "{{ os_volume_name }}{{ ansible_hostname }}_{{ item }}"
   with_sequence: start=0 count="{{ os_volume_count }}"
   delegate_to: localhost

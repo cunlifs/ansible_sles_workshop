@@ -1,15 +1,9 @@
 ---
 # Playbook to remove SAP HANA VGs, LVs and FSs
-- hosts: all
+- hosts: HANA
   become: yes
 
   tasks:
     - name: Import SAP HANA role to remove VGs, LVs, FS and delete volumes with OpenStack
       import_role:
         name: delete_HANA_LVs_OS
-      register: delete_HANA_LVs_ouput
-      
-    - name: Show HANA delete output 
-      debug:
-        var: delete_HANA_LVs_ouput
-        verbosity: 1
