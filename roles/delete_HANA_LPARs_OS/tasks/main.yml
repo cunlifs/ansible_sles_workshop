@@ -1,0 +1,15 @@
+---
+# tasks file for create_HANA_LPARs_OS
+- name: Stop server
+  os_server_action:
+    cloud: "{{ cloud_name }}"
+    action: stop
+    server: "{{ ansible_hostname }}"
+  delegate_to: localhost
+
+- name: Delete Instance
+  os_server:
+    state: absent
+    cloud: "{{ cloud_name }}"
+    name: "{{ ansible_hostname }}"
+  delegate_to: localhost
