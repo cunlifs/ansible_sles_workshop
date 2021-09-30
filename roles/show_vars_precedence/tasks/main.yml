@@ -1,0 +1,11 @@
+---
+# tasks file for show_vars_precedence
+#- name: Set fact for test_var
+#  set_fact:
+#    test_var: "This variable is se using the set_fact module in the role task/main file"
+
+- name: Show the test variable
+  debug:
+    var: test_var
+#  vars:
+#    test_var: "This variable is set in the actual task call"

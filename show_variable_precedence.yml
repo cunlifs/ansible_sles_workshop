@@ -1,0 +1,28 @@
+---
+# Playbook to show variable precedence
+
+# Lowest to highest
+# 1: Roles - default
+# 2: Group vars
+# 3: Host vars
+# 4: Playbooks vars
+# 5: Playbooks vars_prompt
+# 6: Roles - vars
+# 7: Task - vars
+# 8: Roles - set fact
+# 9: CLI - extra vars
+
+- name: Show variable precedence
+  hosts: HANA
+  gather_facts: no
+
+#  vars_prompt:
+#    - name: test_var
+#      prompt: "Please enter value for test_var"
+#      private: no
+
+#  vars:
+#    test_var: "This variable was set in the playbook"
+
+  roles:
+    - show_vars_precedence
