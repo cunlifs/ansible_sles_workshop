@@ -6,5 +6,6 @@ os_net_name: "VLAN_156"
 os_image_name: "SLES15 SP2 for SAP Applications"
 os_flavor_name: "tiny"
 os_availability_zone: "Default Group"
-os_server_count: 2
+os_key_name: "Torsten Wendland Public Key"
+os_server_count: 1
 os_timeout: "300"

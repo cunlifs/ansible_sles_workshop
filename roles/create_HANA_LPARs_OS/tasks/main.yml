@@ -8,6 +8,7 @@
     image: "{{ os_image_name }}"
     flavor: "{{ os_flavor_name }}"
     availability_zone: "{{ os_availability_zone }}"
+    key_name: "{{ os_key_name }}"
     timeout: "{{ os_timeout }}"
     nics:
       - net-name: "{{ os_net_name }}"
@@ -21,3 +22,7 @@
     ansible_host: "{{ item.server.public_v4 }}"
   with_items: "{{ my_vm.results }}"
   when: my_vm is changed
+
+- name: Wait to be sure ssh is available
+  pause:
+    seconds: 300

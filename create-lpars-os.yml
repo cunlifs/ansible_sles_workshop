@@ -14,7 +14,7 @@
   hosts: all
   gather_facts: yes
   become: no
-#  ansible_user: student
+  remote_user: root
   roles:
   - install_HANA_APACHE
   

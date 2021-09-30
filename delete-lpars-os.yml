@@ -1,0 +1,11 @@
+---
+# Playbook to delete a HANA LPARs with OpenStack
+
+#- hosts: localhost
+#  become: no
+ 
+- name: Import SAP HANA role to delete LPARs 
+  hosts: all
+  become: no
+  roles:
+  - delete_HANA_LPARs_OS
