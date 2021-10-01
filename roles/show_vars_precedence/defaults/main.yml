@@ -1,3 +1,3 @@
 ---
 # defaults file for show_vars_precedence
-#test_var: "This was set in the role show_vars_precedence ./default/main.yml"
+test_var: "This was set in the role show_vars_precedence ./default/main.yml"

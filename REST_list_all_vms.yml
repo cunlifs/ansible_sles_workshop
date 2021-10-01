@@ -1,0 +1,33 @@
+---
+# Playbooks to use API calls to list VMs
+- name: List VMs
+# prompt for id, password and project
+  hosts: localhost
+  vars:
+    powervc_host: 9.196.156.183
+    auth_port: 5000
+    nova_port: 8774
+
+  vars_prompt:
+    - name: "PowerVC_ID"
+      prompt: "Enter PowerVC user ID"
+      private: no
+    - name: "PowerVC_password"
+      prompt: "Enter PowerVC password"
+      private: yes
+    - name: "Project_Name"
+      prompt: "Enter name of project"
+      private: no
+
+  tasks:
+    - name: Connect to PowerVC and collect auth token
+      include_role:
+        name:  REST_obtain_token
+
+    - name: Obtain the project ID from the project name
+      include_role:
+        name:  REST_select_project
+
+    - name: Display all VMs
+      include_role:
+        name:  REST_list_vms

@@ -1,0 +1,53 @@
+---
+# tasks file for REST_select_project
+# tasks file for REST_select_project - if defined already it won't prompt
+# Collects projects and registers with parameter 'project'
+# If using list and select this collection may already have been run
+- name: Connect to PowerVC with token and collect project information
+  uri:
+    url: https://{{ powervc_host }}:{{ auth_port }}/v3/projects
+    method: GET
+    use_proxy: no
+    validate_certs: no
+    return_content: no
+    headers:
+      X-Auth-Token: "{{ auth_token }}"
+  register: projects
+
+# Prompt only if Project_Name was not already defined
+- name: Prompt for project name
+  pause:
+    prompt: "Enter name of project to use "
+  register: Project_Input
+  when:  Project_Name is undefined
+
+- name: Set project name
+  set_fact:
+    Project_Name: "{{Project_Input.user_input }}"
+  when:  Project_Name is undefined
+
+- name: Output Project List
+  debug:
+    var: Project_Name
+    verbosity: 1
+
+- name: Get id for selected project
+  set_fact:
+    project_id_array:  "{{ projects.json | json_query(query) }}"
+  vars:
+    query: "projects[?name=='{{ Project_Name }}'].{id: id}"
+
+- name: Debug - Output Flavor Array
+  debug:
+    var: project_id_array.0
+    verbosity: 1
+
+- name: Set Values for selected flavor
+  set_fact:
+    project_id:   "{{ project_id_array.0['id'] }}"
+  when: project_id_array.0 is defined
+
+- name: Show ID
+  debug:
+    msg: "Using project: '{{ Project_Name }}' and ID '{{ project_id }}'"
+    verbosity: 1

@@ -1,0 +1,5 @@
+---
+# vars file for REST_list_vms
+VM_Heading:
+  name: "- VM Name -"
+  id:   "- ID -"

@@ -16,13 +16,13 @@
   hosts: HANA
   gather_facts: no
 
-#  vars_prompt:
-#    - name: test_var
-#      prompt: "Please enter value for test_var"
-#      private: no
+  vars_prompt:
+    - name: test_var
+      prompt: "Please enter value for test_var"
+      private: no
 
-#  vars:
-#    test_var: "This variable was set in the playbook"
+  vars:
+    test_var: "This variable was set in the playbook"
 
   roles:
     - show_vars_precedence

@@ -1,0 +1,28 @@
+---
+# tasks file for REST_list_vms
+- name: Connect to PowerVC with token and collect vm information
+  uri:
+    url: https://{{ powervc_host }}:{{ nova_port }}/v2.1/{{ project_id }}/servers
+    method: GET 
+    use_proxy: no
+    validate_certs: no
+    return_content: no
+    headers:
+      X-Auth-Token: "{{ auth_token }}"
+  register: vms
+
+- name: Collect VM list
+  set_fact:
+    vm_list: "{{ vms.json | json_query(query) }}"
+  vars:
+    query: 'servers[*].
+           {name: name, id: id}'
+
+- name: Output List
+  set_fact:
+    vm_table: "{{ item.name }}, id: {{ item.id }}"
+  with_items: "{{VM_Heading}},{{ vm_list }}"
+  loop_control:
+    index_var: VM_Seq
+    label: "{{ item.name|center(width=35) }}|{{ item.id|center(width=40) }} "
+  register: VM_Array

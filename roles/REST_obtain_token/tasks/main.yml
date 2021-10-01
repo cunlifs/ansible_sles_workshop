@@ -1,0 +1,21 @@
+---
+# tasks file for REST_obtain_token
+- name: Connect to PowerVC and collect auth token
+  uri:
+    url: https://{{ powervc_host }}:{{ auth_port }}/v3/auth/tokens
+    method: POST
+    body: '{"auth":{"scope":{"project":{"domain":{"name":"Default"},"name":"ibm-default"}},"identity":{"password":{"user":{"domain":{"name":"Default"},"password":"{{ PowerVC_password }}","name":"{{ PowerVC_ID }}"}},"methods":["password"]}}}'
+    body_format: json
+    use_proxy: no
+    validate_certs: no
+    status_code: 201
+  register: auth
+
+- name: Set Auth Token
+  set_fact:
+    auth_token: "{{ auth.x_subject_token }}"
+
+- name: Display Auth Token
+  debug:
+    var: auth_token
+    verbosity: 1
