@@ -8,13 +8,11 @@
     debug:
       msg: "{{ ansible_hostname }} is of architecture type {{ ansible_facts.architecture }}"
 
-  - name: Show OS facts 
-    debug:
-      msg: "{{ ansible_hostname }} is running {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}"
- 
+
+
   - name: Run hostnamectl
     command:
-       cmd: hostnamectl 
+       cmd: hostnamectl
     register: hostname_output
 
   - name: Show all of hostnamectl output
@@ -24,3 +22,7 @@
   - name: Show just the return code from hostnamctl run
     debug:
       var: hostname_output.rc
+
+  - name: Show OS facts
+    debug:
+      msg: "{{ ansible_hostname }} is running {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}"
