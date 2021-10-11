@@ -23,4 +23,4 @@
 
   - name: Show just the return code from hostnamctl run
     debug:
-      var: hostname_output.stdout
+      var: hostname_output.stdout_lines
